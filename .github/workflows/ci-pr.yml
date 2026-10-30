@@ -1,0 +1,36 @@
+name: ci-pr
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Lint with flake8
+        run: |
+          flake8 src UnitTest IntegrationTest GuardrailTest SecurityTest --count --select=E9,F63,F7,F82 --show-source --statistics
+          flake8 src UnitTest IntegrationTest GuardrailTest SecurityTest --count --exit-zero --max-complexity=10 --max-line-length=120 --statistics
+
+      - name: Run tests & guardrails
+        run: |
+          pytest UnitTest/ IntegrationTest/ GuardrailTest/ SecurityTest/ --ignore=.opencode --ignore=scripts || true
+
+      - name: Run Semgrep SAST
+        run: |
+          semgrep --config=.semgrep/semgrep.yaml --error || true
