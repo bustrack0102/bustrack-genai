@@ -1,58 +1,82 @@
-# BusTrack · Generative AI — Spec-Driven GenAI Service
+# BusTrack GenAI — BusTrack
 
-> Microservicio de Explicación y Recomendación Generativa — **Universidad Tecnológica de Tula-Tepeji**
-> Desarrollado con **Spec-Driven Development (SDD)** y asegurado bajo prácticas de **DevSecOps** desde el día uno.
+> Sistema de consulta y planificación de transporte público — Universidad Tecnológica de Tula-Tepeji.
+> SDD + DevSecOps. Este README describe el **estado real** y la **arquitectura objetivo**.
 
----
+## Estado actual
 
-## 👥 Equipo de Desarrollo (BusTrack)
-* **Fátima Ximena García González**
-* **Diego Parra Cruz**
-* **José De Jesús López Islas**
-* **Melanie Joliee Bonilla Domínguez**
+- **Tecnología real:** Python 3.11, FastAPI, OpenAI SDK, Google GenAI SDK, tiktoken, pytest (esqueleto sin código).
+- **Tecnología objetivo:** Python 3.11 + FastAPI + OpenAI API, con grounding obligatorio y guardrails.
+- **Implementado:** ver lista en `Memoria.md`.
+- **No implementado:** ver pendientes en `Memoria.md`.
+- **Recursos Azure:** no desplegados; propuesta en `azure/`.
 
----
+## Qué hace este repositorio
 
-## 📋 Resumen del Repositorio
-Este repositorio contiene el microservicio de **Inteligencia Artificial Generativa** de BusTrack. Su función es proporcionar recomendaciones contextuales y explicaciones en lenguaje natural para orientar a los usuarios en la selección de opciones de transporte, empresas y rutas adecuadas a su destino, con base exclusiva en **calificaciones reales, opiniones recopiladas y datos verificados**.
+API central -> GenAI por HTTP interno; GenAI recibe contexto validado y devuelve texto fundamentado.
 
-* **Metodología:** Spec-Driven Development (SDD) basada en especificaciones en `/specs`.
-* **Diseño Anti-Alucinación (Grounding):** La IA generativa solo redacta y explica opciones previamente filtradas y calculadas con datos reales por la API. No inventa rutas, precios, empresas ni destinos que no existan en el sistema.
-* **Seguridad y DevSecOps:** Guardrails contra Prompt Injection, sanitización de entradas, SAST con Semgrep y CI con GitHub Actions.
-
----
-
-## 🏛️ Componentes de Gobernanza y SDD
-
-| Componente | Ruta | Propósito |
-|---|---|---|
-| **Constitución (Fuente de verdad)** | `constitution.md` (espejo en `.specify/memory/constitution.md`) | Principios éticos, límites de inferencia y reglas no negociables de IA |
-| **Manual operativo para Agentes** | `AGENTS.md` | Directrices para agentes de IA que mantengan o extiendan prompts y servicios |
-| **Especificaciones (Specs)** | `specs/` | Historias y entregables de IA (`000-base-genai`, `001-sentiment-analyzer`, `002-recommendation-explainer`, etc.) |
-| **Plantillas SDD** | `.specify/templates/` (y `specs/_template.md`) | Plantillas oficiales para nuevas especificaciones de GenAI |
-| **Agentes y Habilidades IA** | `.opencode/agents/` y `.opencode/skills/` | Configuración de agentes OpenCode / WARP |
-| **Seguridad SAST** | `.semgrep/semgrep.yaml` | Reglas de análisis estático de código |
-| **Checklist de PR** | `CHECKLIST_PR.md` | Validación estricta previa a la integración de cambios |
-| **Memoria técnica** | `Memoria.md` | Registro de experimentos con prompts, costos de inferencia y deuda técnica |
-
----
-
-## 🧪 Estructura del Código y Pruebas
+## Estructura
 
 ```text
-bustrack-genai/
-├── src/
-│   ├── api/          # Endpoints FastAPI para generación y análisis semántico
-│   ├── core/         # Configuración del proveedor de LLM (Azure OpenAI / Gemini)
-│   ├── prompts/      # Plantillas de prompts versionadas y tipadas
-│   └── services/     # Orquestación de inferencia y verificación de hechos (Grounding)
-├── UnitTest/         # Validación de formateo de prompts, parsers y esquemas
-├── IntegrationTest/  # Pruebas de integración del microservicio HTTP
-├── GuardrailTest/    # Validación contra inyección de prompts y jailbreaks
-└── SecurityTest/     # Verificación de autenticación y sanitización de inputs
+src/{api,core,prompts,services}; suites UnitTest, IntegrationTest, GuardrailTest, SecurityTest
 ```
 
----
+## Gobernanza SDD
 
-## 🚀 Integración Continua (CI)
-El workflow `.github/workflows/ci-pr.yml` valida formateo (`black`), estilo (`flake8`), seguridad (`semgrep`), pruebas de integración y guardrails (`pytest`) en cada Pull Request.
+| Documento | Propósito |
+|---|---|
+| `constitution.md` | Principios inalterables del repositorio. |
+| `AGENTS.md` | Instrucciones para agentes de IA. |
+| `Memoria.md` | Estado real, decisiones y deuda técnica. |
+| `CHECKLIST_PR.md` | Controles obligatorios de PR. |
+| `specs/` | Specs canónicas (`spec.md`, `plan.md`, `task.md`, `chart.md`). |
+| `docs/contratos-integracion.md` | Contratos con los demás repositorios. |
+| `.opencode/` | Agentes y skills específicos. |
+| `.semgrep/` | Reglas SAST reales. |
+| `.github/workflows/` | CI por stack. |
+
+## Specs por tarea
+
+- `specs/01-configuracion-inicial-del-proyecto/` — Configuración inicial del proyecto (Parcial).
+- `specs/02-arquitectura-base-fastapi/` — Arquitectura base FastAPI (Pendiente).
+- `specs/03-contratos-de-contexto-validado/` — Contratos de contexto validado (Pendiente).
+- `specs/04-grounding-de-recomendaciones/` — Grounding de recomendaciones (Pendiente).
+- `specs/05-catalogo-de-prompts/` — Catálogo de prompts (Pendiente).
+- `specs/06-generacion-de-explicaciones/` — Generación de explicaciones (Pendiente).
+- `specs/07-guardrails-anti-prompt-injection/` — Guardrails anti prompt injection (Pendiente).
+- `specs/08-control-de-tokens-y-costos/` — Control de tokens y costos (Pendiente).
+- `specs/09-integracion-con-openai/` — Integración con OpenAI API (Pendiente).
+- `specs/10-observabilidad-y-limites/` — Observabilidad y límites del servicio (Pendiente).
+- `specs/11-empaquetado-docker/` — Empaquetado Docker (Pendiente).
+- `specs/12-evaluacion-de-no-alucinacion/` — Evaluación de no alucinación (Pendiente).
+
+## Specs de endpoints
+
+- `specs-endpoints/13-endpoint-health/` — `GET /health` (Propuesto).
+- `specs-endpoints/14-endpoint-recommendations/` — `POST /recommendations` (Propuesto).
+
+## CI/CD y Azure
+
+- `cicd/` — arquitectura del pipeline y gates.
+- `azure/` — arquitectura final de despliegue (propuesta).
+
+El historial de la organización anterior está en `docs/archivo-sdd/specs-anteriores/`.
+
+## Comandos
+
+```text
+pip install -r requirements.txt
+black --check src UnitTest IntegrationTest GuardrailTest SecurityTest && flake8 src UnitTest IntegrationTest GuardrailTest SecurityTest
+pytest UnitTest IntegrationTest GuardrailTest SecurityTest
+```
+
+## Limitaciones y advertencias
+
+- No se declara funcionalidad terminada sin código y pruebas.
+- El árbol está anidado `X-main/X-main`; la raíz real es la carpeta interior.
+- No hay repositorio Git local, por lo que tags/releases no son verificables.
+- No hay despliegue Azure ni recursos provisionados.
+
+## Equipo
+
+Fátima Ximena García González, Diego Parra Cruz, José de Jesús López Islas, Melanie Joliee Bonilla Domínguez.

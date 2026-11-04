@@ -1,13 +1,61 @@
-# Memoria técnica — BusTrack Generative AI
+# Memoria técnica — BusTrack GenAI
 
-> Registro de experimentos de prompts, evaluación de respuestas, decisiones arquitectónicas y deuda técnica del servicio de IA Generativa.
+> Registro vivo. No se borra historial. Última actualización: 2026-10-30.
 
----
+## 1. Estado real
 
-## 📌 Fase GENAI-00 — Inicialización y Estructura SDD (2026-10-29)
+- **Repositorio:** `bustrack-genai-main` (raíz interior; el árbol está anidado `X-main/X-main`).
+- **Tecnología actual:** Python 3.11, FastAPI, OpenAI SDK, Google GenAI SDK, tiktoken, pytest (esqueleto sin código).
+- **Tecnología objetivo:** Python 3.11 + FastAPI + OpenAI API, con grounding obligatorio y guardrails.
+- **Git:** no hay repositorio Git local; los tags/releases no son verificables.
 
-- **Estado:** Estructura base Spec-Driven Development (SDD) creada para el servicio de IA Generativa en Python.
-- **Decisión 1 (Arquitectura de Servicio):** El servicio operará de manera independiente desacoplado de la API principal, comunicándose vía HTTP interno.
-- **Decisión 2 (Agnosticismo del Proveedor LLM):** El diseño soporta clientes configurables (Azure OpenAI / Gemini) mediante variables de entorno, permitiendo seleccionar el proveedor definitivo sin refactorizar la lógica de negocio.
-- **Decisión 3 (Cero Alucinaciones):** El ordenamiento y filtrado de opciones lo realiza la API con datos reales; el microservicio de IA se limita a la redacción explicativa y síntesis fundamentada (*grounded explanation*).
-- **Deuda Técnica Documentada:** Selección final del proveedor de IA en la nube y parametrización de cuotas/claves en fase de despliegue.
+## 2. Funcionalidades implementadas
+
+- Estructura src/{api,core,prompts,services} (solo .gitkeep).
+- requirements.txt con FastAPI, OpenAI, Google GenAI, tiktoken, pytest, black, flake8 y Semgrep.
+- Gobernanza GenAI/Python en constitution, AGENTS, Memoria y CHECKLIST.
+
+## 3. Funcionalidades pendientes
+
+- Todo el código del servicio: app FastAPI, endpoints internos, prompts y servicios.
+- Integración OpenAI y control de costos/tokens.
+- Grounding, contexto validado y explicaciones/recomendaciones.
+- Guardrails contra prompt injection y alucinaciones.
+- Pruebas de guardrails, integración y seguridad.
+- Dockerfile, CI bloqueante y despliegue Azure.
+
+## 4. Arquitectura actual
+
+src/{api,core,prompts,services}; suites UnitTest, IntegrationTest, GuardrailTest, SecurityTest
+
+## 5. Migraciones
+
+No aplica una migración de stack en este repositorio.
+
+## 6. Decisiones arquitectónicas
+
+- Se adopta SDD y DevSecOps.
+- La API central es la fuente autorizada de datos.
+- Cosmos DB for NoSQL es la persistencia objetivo.
+- ML y GenAI son servicios internos FastAPI.
+- OpenAI API es el proveedor GenAI objetivo; Google GenAI queda inactivo.
+- Flutter + Dart y Angular + TypeScript son los objetivos de cliente.
+- No se declaran recursos Azure desplegados.
+
+## 7. Dependencias entre repositorios
+
+API central -> GenAI por HTTP interno; GenAI recibe contexto validado y devuelve texto fundamentado.
+
+## 8. Problemas conocidos
+
+- Documentación previa desalineada con el código (corregida en esta reorganización).
+- Specs históricas conservadas como referencia; ver `specs/README.md`.
+- Gates CI/SAST incompletos o no bloqueantes en el estado previo.
+- Deuda de pruebas y despliegue documentada en cada spec.
+
+## 9. Historial
+
+- **2026-10-29:** estructura SDD original y primeras fases.
+- **2026-10-30:** auditoría completa, corrección documental y reorganización SDD.
+  Se separan specs históricas de canónicas, se corrigen afirmaciones de stack y se
+  documentan migraciones, contratos y Azure propuesto.

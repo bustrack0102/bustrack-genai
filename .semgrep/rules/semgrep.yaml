@@ -1,0 +1,22 @@
+rules:
+  - id: bustrack-python-no-hardcoded-secret
+    languages: [python]
+    severity: ERROR
+    message: No hardcodear secretos; usar variables de entorno.
+    patterns:
+      - pattern: $X = "..."
+      - metavariable-regex:
+          metavariable: $X
+          regex: (?i).*(password|secret|api_key|apikey|token).
+  - id: bustrack-python-eval
+    languages: [python]
+    severity: ERROR
+    message: Evitar eval/exec sobre entradas no confiables.
+    pattern-either:
+      - pattern: eval(...)
+      - pattern: exec(...)
+  - id: bustrack-python-requests-no-verify
+    languages: [python]
+    severity: ERROR
+    message: No desactivar la verificacion TLS.
+    pattern: requests.$M(..., verify=False, ...)
