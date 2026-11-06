@@ -1,32 +1,33 @@
 # Memoria técnica — BusTrack GenAI
 
-> Registro vivo. No se borra historial. Última actualización: 2026-10-30.
+> Registro vivo. No se borra historial. Última actualización: 2026-11-05.
 
 ## 1. Estado real
 
-- **Repositorio:** `bustrack-genai-main` (raíz interior; el árbol está anidado `X-main/X-main`).
-- **Tecnología actual:** Python 3.11, FastAPI, OpenAI SDK, Google GenAI SDK, tiktoken, pytest (esqueleto sin código).
+- **Repositorio:** `bustrack-genai`
+- **Tecnología actual:** Python 3.11+, FastAPI, OpenAI SDK (`gpt-4o-mini` vía Azure AI / GitHub Models con fallback determinista), `tiktoken`, `pytest`.
 - **Tecnología objetivo:** Python 3.11 + FastAPI + OpenAI API, con grounding obligatorio y guardrails.
-- **Git:** no hay repositorio Git local; los tags/releases no son verificables.
+- **Git:** conectado a `https://github.com/bustrack0102/bustrack-genai.git`.
 
 ## 2. Funcionalidades implementadas
 
-- Estructura src/{api,core,prompts,services} (solo .gitkeep).
-- requirements.txt con FastAPI, OpenAI, Google GenAI, tiktoken, pytest, black, flake8 y Semgrep.
-- Gobernanza GenAI/Python en constitution, AGENTS, Memoria y CHECKLIST.
+- Estructura completa `src/{api,core,prompts,services}` implementada y operativa:
+  - `src/main.py`: App FastAPI, middleware `X-Correlation-ID` y manejadores de errores uniformes.
+  - `src/core/{config.py,schemas.py,security.py}`: Configuración por entorno, esquemas Pydantic v2 validados y autenticación interna (`X-Internal-Key` / `Bearer`).
+  - `src/prompts/catalog.py`: Catálogo versionado (`v1.0.0`) con reglas estrictas de grounding sobre `rutasCandidatas`.
+  - `src/services/guardrails.py`: Detector anti-prompt-injection, sanitizador anti-PII (correos/teléfonos), control de presupuesto de tokens (`tiktoken`) y validador anti-alucinación (`rutaRecomendadaId` en `rutasEvaluadas`).
+  - `src/services/recommendation_service.py`: Integración con OpenAI SDK (`gpt-4o-mini`) sobre Azure y motor determinista fundamentado de respaldo.
+  - `src/api/routes.py`: Endpoints `GET /health` (`spec-13`) y `POST /recommendations` (`spec-14`).
+- `Dockerfile` multietapa con usuario no-root (`appuser`) y `HEALTHCHECK` (`spec-11`).
+- Suites de pruebas automatizadas en `UnitTest`, `GuardrailTest`, `IntegrationTest` y `SecurityTest`.
 
 ## 3. Funcionalidades pendientes
 
-- Todo el código del servicio: app FastAPI, endpoints internos, prompts y servicios.
-- Integración OpenAI y control de costos/tokens.
-- Grounding, contexto validado y explicaciones/recomendaciones.
-- Guardrails contra prompt injection y alucinaciones.
-- Pruebas de guardrails, integración y seguridad.
-- Dockerfile, CI bloqueante y despliegue Azure.
+- Integración en vivo con el consumo HTTP desde `bustrack-api` en ambiente productivo.
 
 ## 4. Arquitectura actual
 
-src/{api,core,prompts,services}; suites UnitTest, IntegrationTest, GuardrailTest, SecurityTest
+`src/{api,core,prompts,services}`; suites `UnitTest`, `IntegrationTest`, `GuardrailTest`, `SecurityTest`.
 
 ## 5. Migraciones
 
@@ -36,26 +37,20 @@ No aplica una migración de stack en este repositorio.
 
 - Se adopta SDD y DevSecOps.
 - La API central es la fuente autorizada de datos.
-- Cosmos DB for NoSQL es la persistencia objetivo.
 - ML y GenAI son servicios internos FastAPI.
-- OpenAI API es el proveedor GenAI objetivo; Google GenAI queda inactivo.
-- Flutter + Dart y Angular + TypeScript son los objetivos de cliente.
-- No se declaran recursos Azure desplegados.
+- OpenAI SDK (`gpt-4o-mini` vía Azure / GitHub Models) es el proveedor GenAI activo con respaldo determinista fundamentado.
+- Ninguna recomendación puede referenciar un `rutaId` fuera de `rutasCandidatas`.
 
 ## 7. Dependencias entre repositorios
 
-API central -> GenAI por HTTP interno; GenAI recibe contexto validado y devuelve texto fundamentado.
+API central -> GenAI por HTTP interno; GenAI recibe contexto validado y devuelve texto fundamentado compatible con `BusTrackDB.recomendacionesIA`.
 
 ## 8. Problemas conocidos
 
-- Documentación previa desalineada con el código (corregida en esta reorganización).
-- Specs históricas conservadas como referencia; ver `specs/README.md`.
-- Gates CI/SAST incompletos o no bloqueantes en el estado previo.
-- Deuda de pruebas y despliegue documentada en cada spec.
+- Ninguno bloqueante.
 
 ## 9. Historial
 
 - **2026-10-29:** estructura SDD original y primeras fases.
 - **2026-10-30:** auditoría completa, corrección documental y reorganización SDD.
-  Se separan specs históricas de canónicas, se corrigen afirmaciones de stack y se
-  documentan migraciones, contratos y Azure propuesto.
+- **2026-11-05:** implementación completa de FastAPI (`GET /health`, `POST /recommendations`), guardrails anti-prompt-injection, sanitización PII, control de tokens con `tiktoken`, validación de grounding, `Dockerfile` y suites `UnitTest`, `GuardrailTest`, `IntegrationTest` y `SecurityTest`.
