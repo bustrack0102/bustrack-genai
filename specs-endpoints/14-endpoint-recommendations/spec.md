@@ -1,6 +1,6 @@
 # 14-endpoint-recommendations — Endpoint interno de recomendaciones
 
-> Repositorio: BusTrack GenAI · Endpoint: `POST /recommendations` · Estado: Propuesto · Fecha: 2026-10-30.
+> Repositorio: BusTrack GenAI · Endpoint: `POST /recommendations` · Estado: Implementado · Fecha: 2026-11-11.
 
 ## 1. Objetivo
 
@@ -14,7 +14,7 @@ Recibir contexto validado y devolver recomendaciones/explicaciones fundamentadas
 | Ruta | `/recommendations` |
 | Autenticación | Token interno o identidad administrada; sin login público. |
 | Consumidor | API central |
-| Estado | Propuesto |
+| Estado | Implementado |
 
 **Parámetros / entrada:**
 
@@ -59,3 +59,9 @@ Recibir contexto validado y devolver recomendaciones/explicaciones fundamentadas
 
 - `docs/contratos-integracion.md`
 - `spec.md` de la tarea funcional asociada
+
+## Aprobación
+
+- [x] Revisión de arquitectura y contrato realizada — fecha: 2026-11-11
+- [x] CHECKLIST_PR.md validado
+- [x] Sin conflicto con constitution.md

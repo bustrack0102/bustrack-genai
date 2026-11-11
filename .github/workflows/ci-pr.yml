@@ -14,9 +14,11 @@ jobs:
         with:
           python-version: '3.11'
       - run: pip install -r requirements.txt
-      - run: black --check src
-      - run: flake8 src
+      - run: black --check src UnitTest GuardrailTest IntegrationTest SecurityTest
+      - run: flake8 src UnitTest GuardrailTest IntegrationTest SecurityTest
       - run: pytest -q
+      - name: Validación SDD
+        run: pwsh -File scripts/check_sdd.ps1
       - name: Semgrep
         uses: semgrep/semgrep-action@v1
         with:

@@ -1,6 +1,6 @@
 # 13-endpoint-health — Endpoint de salud del servicio GenAI
 
-> Repositorio: BusTrack GenAI · Endpoint: `GET /health` · Estado: Propuesto · Fecha: 2026-10-30.
+> Repositorio: BusTrack GenAI · Endpoint: `GET /health` · Estado: Implementado · Fecha: 2026-11-11.
 
 ## 1. Objetivo
 
@@ -14,7 +14,7 @@ Exponer salud del servicio para operación interna.
 | Ruta | `/health` |
 | Autenticación | Interno; solo API/infraestructura. |
 | Consumidor | API central / infraestructura |
-| Estado | Propuesto |
+| Estado | Implementado |
 
 **Parámetros / entrada:**
 
@@ -55,3 +55,9 @@ Exponer salud del servicio para operación interna.
 
 - `docs/contratos-integracion.md`
 - `spec.md` de la tarea funcional asociada
+
+## Aprobación
+
+- [x] Revisión de arquitectura y contrato realizada — fecha: 2026-11-11
+- [x] CHECKLIST_PR.md validado
+- [x] Sin conflicto con constitution.md

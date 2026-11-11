@@ -54,3 +54,4 @@ API central -> GenAI por HTTP interno; GenAI recibe contexto validado y devuelve
 - **2026-10-29:** estructura SDD original y primeras fases.
 - **2026-10-30:** auditoría completa, corrección documental y reorganización SDD.
 - **2026-11-05:** implementación completa de FastAPI (`GET /health`, `POST /recommendations`), guardrails anti-prompt-injection, sanitización PII, control de tokens con `tiktoken`, validación de grounding, `Dockerfile` y suites `UnitTest`, `GuardrailTest`, `IntegrationTest` y `SecurityTest`.
+- **2026-11-11:** alineación SDD y puerta automática en CI (`docs/endpoints.md` actualizado a `/health` y `/recommendations`, bloques `## Aprobación` y `checklists/pr.md` en `specs/` y `specs-endpoints/`, `scripts/check_sdd.ps1` validando `SDD-OK` en `.github/workflows/ci-pr.yml`).

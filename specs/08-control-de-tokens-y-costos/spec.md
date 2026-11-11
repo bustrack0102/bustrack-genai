@@ -1,6 +1,6 @@
 # 08-control-de-tokens-y-costos — Control de tokens y costos
 
-> Repositorio: BusTrack GenAI · Estado: Pendiente · Fecha: 2026-10-30.
+> Repositorio: BusTrack GenAI · Estado: Implementado · Fecha: 2026-11-11.
 
 ## 1. Objetivo
 
@@ -59,3 +59,9 @@ No implementado.
 - Plan: `plan.md` · Tareas: `task.md` · Diagramas: `chart.md`.
 - Estado real: `../../Memoria.md`.
 - Contratos: `../../docs/contratos-integracion.md`.
+
+## Aprobación
+
+- [x] Revisión de arquitectura y contrato realizada — fecha: 2026-11-11
+- [x] CHECKLIST_PR.md validado
+- [x] Sin conflicto con constitution.md
