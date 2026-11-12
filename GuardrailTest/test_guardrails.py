@@ -61,3 +61,19 @@ def test_blocks_hallucinated_route_and_urls_inside_explanation() -> None:
             "Consulta https://sitio-inventado.example para horarios.",
             valid_routes,
         )
+
+
+def test_allows_rfc4122_uuids_while_still_blocking_real_phones() -> None:
+    uuid_routes = [
+        "10000000-0000-0000-0000-000000000001",
+        "10000000-0000-0000-0000-000000000003",
+    ]
+    validate_explanation_grounding(
+        "Se recomienda la ruta 10000000-0000-0000-0000-000000000001 (AVM) por su tarifa.",
+        uuid_routes,
+    )
+    with pytest.raises(GuardrailViolationError):
+        validate_explanation_grounding(
+            "Ruta 10000000-0000-0000-0000-000000000001, llama al 773-123-4567.",
+            uuid_routes,
+        )

@@ -76,6 +76,10 @@ def validate_grounding(recommended_route_id: str, valid_route_ids: List[str]) ->
 
 ROUTE_CODE_PATTERN = re.compile(r"\bRUT-[A-Z0-9-]+\b", re.IGNORECASE)
 URL_PATTERN = re.compile(r"https?://\S+", re.IGNORECASE)
+UUID_PATTERN = re.compile(
+    r"\b[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\b",
+    re.IGNORECASE,
+)
 
 
 def validate_explanation_grounding(
@@ -98,7 +102,8 @@ def validate_explanation_grounding(
                 f"Alucinacion bloqueada: codigo '{match}' ausente del catalogo."
             )
 
-    if EMAIL_REGEX.search(explanation) or PHONE_REGEX.search(explanation):
+    explanation_without_uuids = UUID_PATTERN.sub("[UUID]", explanation)
+    if EMAIL_REGEX.search(explanation) or PHONE_REGEX.search(explanation_without_uuids):
         raise GuardrailViolationError(
             "Guardrail PII: la explicacion no debe contener datos personales."
         )
