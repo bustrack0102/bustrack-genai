@@ -17,6 +17,7 @@ from src.services.guardrails import (
     detect_prompt_injection,
     enforce_unit_budget,
     sanitize_pii,
+    validate_explanation_grounding,
     validate_grounding,
 )
 
@@ -139,8 +140,9 @@ def generate_recommendation(
             chosen_route, payload.preferencias.prioridadBusqueda
         )
 
-    # 4. Final output grounding guardrail
+    # 4. Final output grounding guardrail (ID + explanation entities & zero PII/URLs)
     validate_grounding(chosen_id, valid_ids)
+    validate_explanation_grounding(explanation, valid_ids)
 
     return RecommendationResponse(
         recomendacionId=f"REC-{uuid.uuid4().hex[:8].upper()}",

@@ -25,7 +25,11 @@ class UserPreferences(BaseModel):
     """User search preferences without PII."""
 
     prioridadBusqueda: Literal[
-        "menor_tiempo", "menor_costo", "mejor_calificacion", "equilibrado"
+        "menor_tiempo",
+        "menor_costo",
+        "mejor_calificacion",
+        "equilibrado",
+        "balanceado",
     ] = "equilibrado"
     idioma: str = Field(default="es-MX", max_length=16)
     notasAdicionales: Optional[str] = Field(default=None, max_length=280)

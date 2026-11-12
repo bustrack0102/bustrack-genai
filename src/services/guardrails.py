@@ -72,3 +72,33 @@ def validate_grounding(recommended_route_id: str, valid_route_ids: List[str]) ->
         raise GuardrailViolationError(
             f"Alucinacion bloqueada: ruta '{recommended_route_id}' fuera del contexto."
         )
+
+
+ROUTE_CODE_PATTERN = re.compile(r"\bRUT-[A-Z0-9-]+\b", re.IGNORECASE)
+URL_PATTERN = re.compile(r"https?://\S+", re.IGNORECASE)
+
+
+def validate_explanation_grounding(
+    explanation: str,
+    valid_route_ids: List[str],
+) -> None:
+    """Block hallucinated route codes, external URLs, or unmasked PII inside prose."""
+    if not explanation or not explanation.strip():
+        raise GuardrailViolationError("Explicacion vacia rechazada por guardrail.")
+
+    if URL_PATTERN.search(explanation):
+        raise GuardrailViolationError(
+            "Alucinacion bloqueada: URL externa no autorizada en explicacion."
+        )
+
+    valid_upper = {rid.upper() for rid in valid_route_ids}
+    for match in ROUTE_CODE_PATTERN.findall(explanation):
+        if match.upper() not in valid_upper:
+            raise GuardrailViolationError(
+                f"Alucinacion bloqueada: codigo '{match}' ausente del catalogo."
+            )
+
+    if EMAIL_REGEX.search(explanation) or PHONE_REGEX.search(explanation):
+        raise GuardrailViolationError(
+            "Guardrail PII: la explicacion no debe contener datos personales."
+        )

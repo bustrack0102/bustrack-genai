@@ -7,6 +7,7 @@ from src.services.guardrails import (
     detect_prompt_injection,
     enforce_unit_budget,
     sanitize_pii,
+    validate_explanation_grounding,
     validate_grounding,
 )
 
@@ -42,3 +43,21 @@ def test_enforces_unit_budget() -> None:
     assert used > 0
     with pytest.raises(BudgetExceededError):
         enforce_unit_budget(short_text * 50, max_units=10)
+
+
+def test_blocks_hallucinated_route_and_urls_inside_explanation() -> None:
+    valid_routes = ["RUT-001-IDA", "RUT-002-IDA"]
+    validate_explanation_grounding(
+        "Se recomienda abordar la ruta RUT-001-IDA desde Terminal Tula.",
+        valid_routes,
+    )
+    with pytest.raises(GuardrailViolationError):
+        validate_explanation_grounding(
+            "Puedes tomar RUT-FANTASMA-999 hacia Centro.",
+            valid_routes,
+        )
+    with pytest.raises(GuardrailViolationError):
+        validate_explanation_grounding(
+            "Consulta https://sitio-inventado.example para horarios.",
+            valid_routes,
+        )
