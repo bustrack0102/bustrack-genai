@@ -1,0 +1,18 @@
+﻿name: Sec 06. Seguridad Dockerfile y Config
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  iac-security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: '! grep -iE "(password|secret|token)=" Dockerfile'
