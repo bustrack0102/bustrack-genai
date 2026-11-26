@@ -9,7 +9,9 @@ INJECTION_PATTERNS = [
     re.compile(r"ignore\s+(all\s+)?(previous\s+)?instructions", re.IGNORECASE),
     re.compile(r"system\s*prompt", re.IGNORECASE),
     re.compile(r"olvida\s+tu\s+rol", re.IGNORECASE),
+    re.compile(r"olvida\s+(todas\s+)?(las\s+|tus\s+)?instrucciones", re.IGNORECASE),
     re.compile(r"actua\s+como", re.IGNORECASE),
+    re.compile(r"\bact\s+as\s+DAN\b|\bbypass\s+(all\s+)?rules\b|\bdeveloper\s+mode\b", re.IGNORECASE),
     re.compile(r"jailbreak", re.IGNORECASE),
 ]
 
@@ -46,12 +48,16 @@ def sanitize_pii(text: Optional[str]) -> str:
 
 
 def count_prompt_units(text: str, model_name: str = "gpt-4o-mini") -> int:
-    """Count prompt units using tiktoken with safe fallback."""
+    """Count prompt units using tiktoken with safe offline fallback."""
     try:
-        encoding = tiktoken.encoding_for_model(model_name)
-    except KeyError:
-        encoding = tiktoken.get_encoding("cl100k_base")
-    return len(encoding.encode(text))
+        try:
+            encoding = tiktoken.encoding_for_model(model_name)
+        except KeyError:
+            encoding = tiktoken.get_encoding("cl100k_base")
+        return len(encoding.encode(text))
+    except Exception:
+        # Offline/network-restricted fallback (~4 chars per token)
+        return max(1, (len(text) + 3) // 4) if text else 0
 
 
 def enforce_unit_budget(
